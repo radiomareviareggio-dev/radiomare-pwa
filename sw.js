@@ -1,7 +1,17 @@
-self.addEventListener('install', function(event) {
-  console.log('Service Worker installato');
+self.addEventListener("install", event => {
+  event.waitUntil(
+    caches.open("radio-mare-cache").then(cache => {
+      return cache.addAll([
+        "./",
+        "./index.html",
+        "./manifest.json"
+      ]);
+    })
+  );
 });
 
-self.addEventListener('fetch', function(event) {
-  console.log('Richiesta fetch:', event.request.url);
+self.addEventListener("fetch", event => {
+  event.respondWith(
+    fetch(event.request).catch(() => caches.match(event.request))
+  );
 });
